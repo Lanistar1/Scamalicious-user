@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 //import { useRouter, useSearchParams } from 'next/navigation';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface FormData {
   code: string;
@@ -20,14 +20,23 @@ const ForgotPassword: React.FC = () => {
 
   const router = useRouter();
   // const { code } = router.query || { code: '123456' };
-  const searchParams = useSearchParams(); // Use `useSearchParams` to access query parameters
-  const code = searchParams.get('code'); // Get `code` from the URL query string
+  //const searchParams = useSearchParams(); // Use `useSearchParams` to access query parameters
+  //const code = searchParams.get('code'); // Get `code` from the URL query string
+
 
   useEffect(() => {
-    if (code) {
-      setFormData((prev) => ({ ...prev, code: code as string }));
-    }
-  }, [code]);
+    // Extract the `code` from the query string using `window.location.search`
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code') || ''; // Default to an empty string if `code` is not present
+    setFormData((prev) => ({ ...prev, code }));
+  }, []);
+
+
+  // useEffect(() => {
+  //   if (code) {
+  //     setFormData((prev) => ({ ...prev, code: code as string }));
+  //   }
+  // }, [code]);
 
   // Extract the code from the query parameters
   // useEffect(() => {
