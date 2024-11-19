@@ -1,10 +1,9 @@
 import React from 'react'
-import ForgotPassword from './forgot-password/ForgotPassword'
-
+import TestPage from './test/TestPage'
 const page = () => {
   return (
     <div>
-      <ForgotPassword />
+      <TestPage />
     </div>
   )
 }
