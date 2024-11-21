@@ -1,6 +1,6 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 //import { useRouter } from 'next/navigation';
 
 interface FormData {
@@ -11,22 +11,25 @@ interface FormData {
 
 const ForgotPassword: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    code: '',
-    password: '',
-    confirmPassword: '', // Initialize confirmPassword
+    code: "",
+    password: "",
+    confirmPassword: "", // Initialize confirmPassword
   });
   const [status, setStatus] = useState<string | null>(null); // API call status
-  const [message, setMessage] = useState<string>(''); // Response message
+  const [message, setMessage] = useState<string>(""); // Response message
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [showModal, setShowModal] = useState(false); // Modal visibility
-  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({}); // Validation errors
+  const [errors, setErrors] = useState<{
+    password?: string;
+    confirmPassword?: string;
+  }>({}); // Validation errors
 
   //const router = useRouter();
 
   useEffect(() => {
     // Extract the `code` from the query string using `window.location.search`
     const params = new URLSearchParams(window.location.search);
-    const code = params.get('code') || ''; // Default to an empty string if `code` is not present
+    const code = params.get("code") || ""; // Default to an empty string if `code` is not present
     setFormData((prev) => ({ ...prev, code }));
   }, []);
 
@@ -34,11 +37,11 @@ const ForgotPassword: React.FC = () => {
     const newErrors: { password?: string; confirmPassword?: string } = {};
 
     if (!formData.password) {
-      newErrors.password = 'Password cannot be empty.';
+      newErrors.password = "Password cannot be empty.";
     }
 
     if (formData.password && formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match.';
+      newErrors.confirmPassword = "Passwords do not match.";
     }
 
     setErrors(newErrors);
@@ -57,30 +60,40 @@ const ForgotPassword: React.FC = () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch('https://server.thescamalicious.com/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: formData.code,
-          newPassword: formData.password,
-        }),
-      });
+      const response = await fetch(
+        "https://server.thescamalicious.com/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: formData.code,
+            newPassword: formData.password,
+          }),
+        }
+      );
 
       const result = await response.json();
 
       if (response.ok) {
-        setStatus('success');
-        setMessage(result.message || 'Password reset successfully!');
+        setStatus("success");
+        setMessage(result.message || "Password reset successfully!");
+
+        // Clear the password fields
+        setFormData((prev) => ({
+          ...prev,
+          password: "",
+          confirmPassword: "",
+        }));
       } else {
-        setStatus('fail');
-        setMessage(result.message || 'Failed to reset password.');
+        setStatus("fail");
+        setMessage(result.message || "Failed to reset password.");
       }
     } catch (error) {
       console.error(error);
-      setStatus('fail');
-      setMessage('An error occurred. Please try again.');
+      setStatus("fail");
+      setMessage("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
       setShowModal(true);
@@ -88,10 +101,13 @@ const ForgotPassword: React.FC = () => {
   };
 
   // Modal Component
-  const Modal: React.FC<{ status: string | null; message: string }> = ({ status, message }) => (
+  const Modal: React.FC<{ status: string | null; message: string }> = ({
+    status,
+    message,
+  }) => (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-sm">
-        {status === 'success' ? (
+        {status === "success" ? (
           <p className="text-green-600 text-xl font-bold">{message}</p>
         ) : (
           <p className="text-red-600 text-xl font-bold">{message}</p>
@@ -113,16 +129,31 @@ const ForgotPassword: React.FC = () => {
       {/* Left Section */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-b from-[#023A5F] via-[#606CB6] to-[#9493DF] justify-center items-center">
         <div className="text-center">
-          <Image src="/assets/images/logo.png" alt="SCAMalicious Logo" width={200} height={200} />
+          <Image
+            src="/assets/images/logo.png"
+            alt="SCAMalicious Logo"
+            width={200}
+            height={200}
+          />
         </div>
       </div>
 
       {/* Right Section */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-gray-100 p-6 sm:p-8">
-        <Image src="/assets/images/logo.png" alt="SCAMalicious Logo" width={80} height={80} />
-        <h2 className="text-2xl font-normal text-[#A52A2A] mt-4">Reset Password</h2>
+        <Image
+          src="/assets/images/logo.png"
+          alt="SCAMalicious Logo"
+          width={80}
+          height={80}
+        />
+        <h2 className="text-2xl font-normal text-[#A52A2A] mt-4">
+          Reset Password
+        </h2>
 
-        <form className="mt-8 w-full md:w-1/2 space-y-4" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 w-full md:w-1/2 space-y-4"
+          onSubmit={handleSubmit}
+        >
           {/* <div>
             <label className="block text-[#384554]">Code</label>
             <div className="relative mt-1">
@@ -150,10 +181,12 @@ const ForgotPassword: React.FC = () => {
                 }
                 placeholder="Enter New Password"
                 className={`w-full p-3 mb-1 rounded-md focus:outline-none focus:border-gray-400 ${
-                  errors.password ? 'border-red-500' : ''
+                  errors.password ? "border-red-500" : ""
                 }`}
               />
-              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm">{errors.password}</p>
+              )}
             </div>
           </div>
           <div>
@@ -171,7 +204,7 @@ const ForgotPassword: React.FC = () => {
                 }
                 placeholder="Confirm Password"
                 className={`w-full p-3 mb-1 rounded-md focus:outline-none focus:border-gray-400 ${
-                  errors.confirmPassword ? 'border-red-500' : ''
+                  errors.confirmPassword ? "border-red-500" : ""
                 }`}
               />
               {errors.confirmPassword && (
@@ -183,11 +216,11 @@ const ForgotPassword: React.FC = () => {
           <button
             type="submit"
             className={`w-full py-3 ${
-              isLoading ? 'bg-gray-400' : 'bg-[#A52A2A]'
+              isLoading ? "bg-gray-400" : "bg-[#A52A2A]"
             } text-white text-base rounded-md`}
             disabled={isLoading}
           >
-            {isLoading ? 'Resetting...' : 'Reset Password'}
+            {isLoading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
       </div>
