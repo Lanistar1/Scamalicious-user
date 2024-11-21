@@ -1,46 +1,55 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-//import { useRouter } from 'next/navigation';
 
 interface FormData {
   code: string;
   password: string;
-  confirmPassword: string; // Added confirmPassword field
+  confirmPassword: string;
 }
 
 const ForgotPassword: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     code: "",
     password: "",
-    confirmPassword: "", // Initialize confirmPassword
+    confirmPassword: "",
   });
+
   const [status, setStatus] = useState<string | null>(null); // API call status
   const [message, setMessage] = useState<string>(""); // Response message
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [showModal, setShowModal] = useState(false); // Modal visibility
+
+  const [showPassword, setShowPassword] = useState(false); // Toggle visibility for Password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle visibility for Confirm Password
   const [errors, setErrors] = useState<{
     password?: string;
     confirmPassword?: string;
-  }>({}); // Validation errors
-
-  //const router = useRouter();
+  }>({});
 
   useEffect(() => {
-    // Extract the `code` from the query string using `window.location.search`
     const params = new URLSearchParams(window.location.search);
-    const code = params.get("code") || ""; // Default to an empty string if `code` is not present
+    const code = params.get("code") || "";
     setFormData((prev) => ({ ...prev, code }));
   }, []);
 
   const validateFields = (): boolean => {
     const newErrors: { password?: string; confirmPassword?: string } = {};
 
+    // const passwordRegex =
+    //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+
     if (!formData.password) {
       newErrors.password = "Password cannot be empty.";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters, include a number and a special character.";
     }
 
-    if (formData.password && formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
     }
 
@@ -49,7 +58,6 @@ const ForgotPassword: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -150,27 +158,23 @@ const ForgotPassword: React.FC = () => {
           Reset Password
         </h2>
 
+        <p className="text-[14px] text-start items-start font-normal text-[#222222] mt-4">
+          Password field must contain atleast a number,
+        </p>
+        <p className="text-[14px] text-start items-start font-normal text-[#222222]">
+          a special character and must be atleast 8 characters long.
+        </p>
+
         <form
           className="mt-8 w-full md:w-1/2 space-y-4"
           onSubmit={handleSubmit}
         >
-          {/* <div>
-            <label className="block text-[#384554]">Code</label>
-            <div className="relative mt-1">
-              <input
-                type="text"
-                name="code"
-                value={formData.code}
-                className="w-full p-3 rounded-md bg-gray-200 cursor-not-allowed focus:outline-none"
-                readOnly
-              />
-            </div>
-          </div> */}
+          {/* Password Field */}
           <div>
             <label className="block text-[#384554]">New Password</label>
             <div className="relative mt-1">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={(e) =>
@@ -184,16 +188,34 @@ const ForgotPassword: React.FC = () => {
                   errors.password ? "border-red-500" : ""
                 }`}
               />
+              <div
+                className="absolute right-3 top-3 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <Image
+                  src={
+                    showPassword
+                      ? "/assets/images/eyedd.png"
+                      : "/assets/images/eyezz.png"
+                  }
+                  alt={showPassword ? "Hide Password" : "Show Password"}
+                  width={20}
+                  height={12}
+                  className="items-center mt-1"
+                />
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-sm">{errors.password}</p>
               )}
             </div>
           </div>
+
+          {/* Confirm Password Field */}
           <div>
             <label className="block text-[#384554]">Confirm Password</label>
             <div className="relative mt-1">
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={(e) =>
@@ -207,6 +229,22 @@ const ForgotPassword: React.FC = () => {
                   errors.confirmPassword ? "border-red-500" : ""
                 }`}
               />
+              <div
+                className="absolute right-3 top-3 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <Image
+                  src={
+                    showConfirmPassword
+                      ? "/assets/images/eyedd.png"
+                      : "/assets/images/eyezz.png"
+                  }
+                  alt={showConfirmPassword ? "Hide Password" : "Show Password"}
+                  width={20}
+                  height={12}
+                  className="items-center mt-1"
+                />
+              </div>
               {errors.confirmPassword && (
                 <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
@@ -215,18 +253,15 @@ const ForgotPassword: React.FC = () => {
 
           <button
             type="submit"
-            className={`w-full py-3 ${
-              isLoading ? "bg-gray-400" : "bg-[#A52A2A]"
-            } text-white text-base rounded-md`}
+            className="w-full py-3 bg-[#A52A2A] text-white text-base rounded-md"
             disabled={isLoading}
           >
             {isLoading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
       </div>
-
-      {/* Modal */}
-      {showModal && <Modal status={status} message={message} />}
+       {/* Modal */}
+       {showModal && <Modal status={status} message={message} />}
     </div>
   );
 };
