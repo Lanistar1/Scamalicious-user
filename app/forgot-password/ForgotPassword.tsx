@@ -184,7 +184,7 @@ const ForgotPassword: React.FC = () => {
                   }))
                 }
                 placeholder="Enter New Password"
-                className={`w-full p-3 mb-1 rounded-md focus:outline-none focus:border-gray-400 ${
+                className={`w-full p-3 mb-1 text-black rounded-md focus:outline-none focus:border-gray-400 ${
                   errors.password ? "border-red-500" : ""
                 }`}
               />
@@ -225,7 +225,7 @@ const ForgotPassword: React.FC = () => {
                   }))
                 }
                 placeholder="Confirm Password"
-                className={`w-full p-3 mb-1 rounded-md focus:outline-none focus:border-gray-400 ${
+                className={`w-full p-3 mb-1 text-black rounded-md focus:outline-none focus:border-gray-400 ${
                   errors.confirmPassword ? "border-red-500" : ""
                 }`}
               />
