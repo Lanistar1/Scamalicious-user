@@ -7,7 +7,7 @@ const TestPage = () => {
       <div>
         <Link
           href={{
-            pathname: "/verify-email",
+            pathname: "/verify",
             query: { code: "223344" },
           }}
         >
